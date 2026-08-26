@@ -30,7 +30,7 @@ public class Calculator {
         System.out.println();
 
         try {
-            System.out.print("Enter first number: ");
+            System.out.print("Enter first number(3 digit): ");
             double num1 = scanner.nextDouble();
 
             System.out.print("Enter operator (+, -, *, /): ");
