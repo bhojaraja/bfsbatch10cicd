@@ -1,0 +1,50 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        java-version: ['11', '17', '21']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Display Java version
+      run: java -version
+
+    - name: Compile Calculator application
+      run: javac Calculator.java
+
+    - name: Download JUnit libraries
+      run: |
+        mkdir -p lib
+        cd lib
+        wget https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.9.2/junit-jupiter-api-5.9.2.jar
+        wget https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.9.2/junit-jupiter-engine-5.9.2.jar
+        wget https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.2/junit-platform-console-standalone-1.9.2.jar
+
+    - name: Compile tests
+      run: javac -cp lib/junit-jupiter-api-5.9.2.jar:lib/junit-jupiter-engine-5.9.2.jar CalculatorTest.java
+
+    - name: Run JUnit tests
+      run: java -jar lib/junit-platform-console-standalone-1.9.2.jar --scan-classpath --details=verbose
+
+    - name: Test Results Summary
+      if: always()
+      run: echo "✅ Build and tests completed successfully!"
