@@ -28,22 +28,8 @@ jobs:
     - name: Display Java version
       run: java -version
 
-    - name: Compile Calculator application
-      run: javac Calculator.java
-
-    - name: Download JUnit libraries
-      run: |
-        mkdir -p lib
-        cd lib
-        wget https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.9.2/junit-jupiter-api-5.9.2.jar
-        wget https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.9.2/junit-jupiter-engine-5.9.2.jar
-        wget https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.2/junit-platform-console-standalone-1.9.2.jar
-
-    - name: Compile tests
-      run: javac -cp lib/junit-jupiter-api-5.9.2.jar:lib/junit-jupiter-engine-5.9.2.jar CalculatorTest.java
-
-    - name: Run JUnit tests
-      run: java -jar lib/junit-platform-console-standalone-1.9.2.jar --scan-classpath --details=verbose
+    - name: Build and Test with Maven
+      run: mvn clean test
 
     - name: Test Results Summary
       if: always()
